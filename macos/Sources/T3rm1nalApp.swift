@@ -134,6 +134,7 @@ private struct GameWebView: NSViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.underPageBackgroundColor = .black
         webView.navigationDelegate = context.coordinator
+        webView.uiDelegate = context.coordinator
         webView.allowsBackForwardNavigationGestures = false
         webView.loadFileURL(
             Self.gameURL,
@@ -164,7 +165,7 @@ private struct GameWebView: NSViewRepresentable {
         gameDirectory.appendingPathComponent("index.html")
     }
 
-    final class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
+    final class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler, WKUIDelegate {
         var parent: GameWebView
 
         init(parent: GameWebView) {
@@ -182,6 +183,37 @@ private struct GameWebView: NSViewRepresentable {
                 return
             }
             UserDefaults.standard.set(true, forKey: "hardModeUnlocked")
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            runJavaScriptAlertPanelWithMessage message: String,
+            initiatedByFrame frame: WKFrameInfo,
+            completionHandler: @escaping () -> Void
+        ) {
+            NSLog("Dismissed JavaScript alert from game: %@", message)
+            completionHandler()
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            runJavaScriptConfirmPanelWithMessage message: String,
+            initiatedByFrame frame: WKFrameInfo,
+            completionHandler: @escaping (Bool) -> Void
+        ) {
+            NSLog("Rejected JavaScript confirmation from game: %@", message)
+            completionHandler(false)
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            runJavaScriptTextInputPanelWithPrompt prompt: String,
+            defaultText: String?,
+            initiatedByFrame frame: WKFrameInfo,
+            completionHandler: @escaping (String?) -> Void
+        ) {
+            NSLog("Dismissed JavaScript prompt from game: %@", prompt)
+            completionHandler(nil)
         }
 
         func webView(
