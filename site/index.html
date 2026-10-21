@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101310">
+    <meta name="description" content="Survive the dungeon, one wave at a time.">
+    <title>t3rm1nal.io — Dungeon Survival</title>
+    <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <script src="game.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <img class="brand-logo" src="assets/logo.svg" alt="">
+          <div>
+            <p class="eyebrow">WAVE SURVIVAL</p>
+            <h1>t3rm1nal<span>.io</span></h1>
+          </div>
+        </div>
+        <p class="topbar-note">One more round?</p>
+      </header>
+
+      <section class="game-layout" aria-label="Dungeon survival game">
+        <div class="game-column">
+          <div class="game-heading">
+            <div>
+              <p class="eyebrow" id="mode-label">NORMAL MODE</p>
+              <h2 id="game-title">The dungeon is waiting.</h2>
+            </div>
+            <div class="round-pill" id="round-pill">ROUND <span id="round-number">—</span></div>
+          </div>
+
+          <div class="board-frame">
+            <canvas id="game-board" width="800" height="300" aria-label="Dungeon map"></canvas>
+            <div class="screen-overlay" id="screen-overlay" aria-live="polite">
+              <div class="overlay-card">
+                <img class="overlay-logo" src="assets/logo.svg" alt="">
+                <p class="eyebrow">DUNGEON SURVIVAL</p>
+                <h2 id="overlay-title">Survive the waves.</h2>
+                <p id="overlay-copy">Clear each round to face a bigger horde. How long can you last?</p>
+                <div class="menu-actions" id="menu-actions">
+                  <button class="button button-primary" id="normal-button" type="button">Play normal</button>
+                  <button class="button button-secondary" id="hard-button" type="button">Hard mode locked</button>
+                </div>
+                <button class="button button-primary is-hidden" id="continue-button" type="button">Start round</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="status-row">
+            <p class="status-message" id="status-message">Choose a mode to start.</p>
+            <p class="enemy-counter" id="enemy-counter">Enemies <strong>—</strong></p>
+          </div>
+
+          <div class="touch-controls" aria-label="Touch controls">
+            <div class="d-pad">
+              <button type="button" data-key="w" aria-label="Move up">▲</button>
+              <button type="button" data-key="a" aria-label="Move left">◀</button>
+              <button type="button" data-key="s" aria-label="Move down">▼</button>
+              <button type="button" data-key="d" aria-label="Move right">▶</button>
+            </div>
+            <div class="touch-actions">
+              <button class="button button-secondary" type="button" data-key=" ">Attack</button>
+              <button class="button button-secondary" type="button" data-key="e">Open</button>
+              <button class="button button-secondary" type="button" data-key="h">Heal</button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="side-panel">
+          <section class="panel-card player-card">
+            <div class="panel-title"><span>YOUR STATUS</span><span class="player-mark">@</span></div>
+            <div class="health-copy"><span>Health</span><strong id="health-value">—</strong></div>
+            <div class="health-track"><div class="health-fill" id="health-fill"></div></div>
+            <div class="stat-line"><span>Weapon</span><strong id="weapon-value">Fists</strong></div>
+            <div class="stat-line"><span>Damage</span><strong id="damage-value">4</strong></div>
+          </section>
+
+          <section class="panel-card">
+            <div class="panel-title"><span>BACKPACK</span><span class="muted" id="inventory-count">0 ITEMS</span></div>
+            <ul class="inventory-list" id="inventory-list"><li class="empty-inventory">Nothing in your pack.</li></ul>
+          </section>
+
+          <section class="panel-card controls-card">
+            <div class="panel-title"><span>CONTROLS</span></div>
+            <div class="control-row"><kbd>WASD</kbd><span>Move</span></div>
+            <div class="control-row"><kbd>SPACE</kbd><span>Attack nearby enemy</span></div>
+            <div class="control-row"><kbd>E</kbd><span>Open nearby chest</span></div>
+            <div class="control-row"><kbd>H</kbd><span>Use a potion</span></div>
+            <div class="control-row"><kbd>ESC</kbd><span>Pause</span></div>
+          </section>
+        </aside>
+      </section>
+
+      <footer>
+        <span>Made for the brave (and slightly reckless).</span>
+        <span id="save-status">Progress is saved in this browser.</span>
+      </footer>
+      <p class="config-error is-hidden" id="config-error" role="alert"></p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+{
+  "map": {
+    "width": 40,
+    "height": 15,
+    "obstacles": 18,
+    "chestsPerRound": 2
+  },
+  "player": {
+    "health": 30,
+    "hardModeHealth": 20,
+    "damage": 4
+  },
+  "rounds": {
+    "startingEnemies": 4,
+    "enemiesPerRound": 1,
+    "enemyHealthPerFiveRounds": 1,
+    "damageBonusEveryTenRounds": 1,
+    "spawnIntervalMs": 1000,
+    "zombieMoveIntervalMs": 450
+  },
+  "enemies": {
+    "Z": {
+      "name": "Zombie",
+      "health": 20,
+      "damage": 2,
+      "attackIntervalMs": 1000
+    },
+    "S": {
+      "name": "Skeleton",
+      "health": 12,
+      "damage": 3,
+      "attackIntervalMs": 2000,
+      "arrowStepMs": 200,
+      "arrowRange": 10
+    }
+  },
+  "loot": {
+    "rarityWeights": {
+      "common": 60,
+      "uncommon": 25,
+      "rare": 10,
+      "epic": 4,
+      "legendary": 1
+    },
+    "hardModeRarityWeights": {
+      "common": 85,
+      "uncommon": 12,
+      "rare": 2.5,
+      "epic": 0.45,
+      "legendary": 0.05
+    },
+    "items": [
+      {
+        "name": "Rusty Sword",
+        "type": "weapon",
+        "rarity": "common",
+        "weight": 1,
+        "damageBonus": 2
+      },
+      {
+        "name": "Iron Sword",
+        "type": "weapon",
+        "rarity": "uncommon",
+        "weight": 1,
+        "damageBonus": 4
+      },
+      {
+        "name": "Health Potion",
+        "type": "potion",
+        "rarity": "common",
+        "weight": 2,
+        "heal": 10
+      },
+      {
+        "name": "Greater Potion",
+        "type": "potion",
+        "rarity": "rare",
+        "weight": 1,
+        "heal": 20
+      }
+    ]
+  }
+}
