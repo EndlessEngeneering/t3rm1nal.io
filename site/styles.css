@@ -161,3 +161,104 @@ footer { gap: 10px; margin-top: 17px; color: #888; font-size: 9px; }
   footer { align-items: flex-start; flex-direction: column; }
   .round-pill { padding: 6px 8px; font-size: 9px; }
 }
+
+.native-terminal body,
+.native-terminal .app-shell {
+  background: #000;
+}
+
+.native-terminal .app-shell {
+  width: min(1080px, calc(100% - 36px));
+  padding-top: 14px;
+}
+
+.native-terminal .topbar,
+.native-terminal .touch-controls {
+  display: none;
+}
+
+.native-terminal .game-heading {
+  border-bottom: 1px solid #444;
+}
+
+.native-terminal .game-heading h2,
+.native-terminal .eyebrow,
+.native-terminal .round-pill span,
+.native-terminal .enemy-counter strong,
+.native-terminal .player-mark {
+  color: #fff;
+}
+
+.native-terminal .board-frame,
+.native-terminal .panel-card,
+.native-terminal .button,
+.native-terminal kbd {
+  border-color: #555;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.native-terminal .board-frame,
+.native-terminal .panel-card,
+.native-terminal .button,
+.native-terminal kbd,
+.native-terminal .round-pill {
+  background: #000;
+}
+
+.native-terminal .screen-overlay {
+  background: #000f;
+  backdrop-filter: none;
+}
+
+.native-terminal .overlay-logo {
+  border-radius: 0;
+}
+
+.native-terminal .button-primary {
+  border-color: #fff;
+  background: #fff;
+  color: #000;
+}
+
+.native-terminal .button-secondary {
+  border-color: #666;
+  background: #000;
+  color: #fff;
+}
+
+.native-terminal .health-track {
+  border: 1px solid #555;
+  border-radius: 0;
+  background: #000;
+}
+
+.native-terminal .health-fill {
+  border-radius: 0;
+  background: #fff;
+}
+
+.native-terminal .health-fill.is-low {
+  background: #999;
+}
+
+.native-terminal .inventory-list li span,
+.native-terminal .muted {
+  color: #aaa !important;
+}
+
+.native-terminal .control-row,
+.native-terminal footer,
+.native-terminal .status-row {
+  color: #aaa;
+}
+
+.native-terminal .panel-title {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #333;
+}
+
+.native-terminal .config-error {
+  padding: 10px;
+  border: 1px solid #777;
+}

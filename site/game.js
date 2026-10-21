@@ -484,6 +484,40 @@ function draw() {
     return;
   }
 
+  if (window.nativeGameStorage?.terminalAppearance) {
+    context.fillStyle = "#000";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.font = "14px SFMono-Regular, Consolas, monospace";
+    for (let y = 0; y < gameMap.length; y += 1) {
+      for (let x = 0; x < gameMap[y].length; x += 1) {
+        const character = gameMap[y][x] === "#" ? "#" : ".";
+        context.fillStyle = character === "#" ? "#fff" : "#555";
+        context.fillText(
+          character,
+          x * cellSize + cellSize / 2,
+          y * cellSize + cellSize / 2
+        );
+      }
+    }
+    for (const [key, entity] of Object.entries(entities)) {
+      const [x, y] = parsePosition(key);
+      context.fillStyle = "#fff";
+      context.fillText(entity.symbol, x * cellSize + cellSize / 2, y * cellSize + cellSize / 2);
+    }
+    for (const projectile of projectiles) {
+      if (projectile.index >= 0 && projectile.index < projectile.path.length) {
+        const tile = projectile.path[projectile.index];
+        context.fillText("*", tile.x * cellSize + cellSize / 2, tile.y * cellSize + cellSize / 2);
+      }
+    }
+    context.fillStyle = "#fff";
+    context.font = "bold 14px SFMono-Regular, Consolas, monospace";
+    context.fillText("@", player.x * cellSize + cellSize / 2, player.y * cellSize + cellSize / 2);
+    return;
+  }
+
   for (let y = 0; y < gameMap.length; y += 1) {
     for (let x = 0; x < gameMap[y].length; x += 1) {
       const wall = gameMap[y][x] === "#";

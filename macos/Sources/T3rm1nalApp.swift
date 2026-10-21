@@ -53,18 +53,16 @@ private struct TerminalWindow: View {
 
     private var titleBar: some View {
         HStack(spacing: 12) {
-            Image(systemName: "asterisk")
-                .font(.system(size: 18, weight: .medium, design: .monospaced))
+            Text("*")
+                .font(.system(size: 25, weight: .regular, design: .monospaced))
                 .foregroundStyle(.white)
                 .frame(width: 36, height: 36)
                 .background {
-                    RoundedRectangle(cornerRadius: 11, style: .continuous)
-                        .fill(.white.opacity(0.1))
+                    Rectangle()
+                        .fill(.black)
                         .overlay {
-                            RoundedRectangle(cornerRadius: 11, style: .continuous)
-                                .strokeBorder(.white.opacity(0.24), lineWidth: 1)
+                            Rectangle().strokeBorder(.white.opacity(0.5), lineWidth: 1)
                         }
-                        .applyGlassIfAvailable()
                 }
 
             VStack(alignment: .leading, spacing: 3) {
@@ -90,18 +88,15 @@ private struct TerminalWindow: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 9)
-            .background {
-                Capsule()
-                    .fill(.white.opacity(0.06))
-                    .overlay {
-                        Capsule().strokeBorder(.white.opacity(0.12), lineWidth: 1)
-                    }
-                    .applyGlassIfAvailable(shape: Capsule())
+            .overlay(alignment: .bottom) {
+                Rectangle()
+                    .fill(.white.opacity(0.25))
+                    .frame(height: 1)
             }
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 12)
-        .background(.ultraThinMaterial)
+        .background(Color.black)
     }
 }
 
@@ -117,8 +112,11 @@ private struct GameWebView: NSViewRepresentable {
         let configBase64 = (try? Data(contentsOf: configURL))?.base64EncodedString()
         let configValue = configBase64.map { "\"\($0)\"" } ?? "null"
         let bootstrapScript = """
-        window.nativeGameStorage = { hardModeUnlocked: \(unlocked) };
+        window.nativeGameStorage = { hardModeUnlocked: \(unlocked), terminalAppearance: true };
         window.nativeGameConfigBase64 = \(configValue);
+        document.addEventListener("DOMContentLoaded", () => {
+            document.documentElement.classList.add("native-terminal");
+        });
         """
         contentController.addUserScript(
             WKUserScript(
