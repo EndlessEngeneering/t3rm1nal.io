@@ -22,7 +22,9 @@ const rarityColors = {
 let config;
 let state = "loading";
 let hardMode = false;
-let hardUnlocked = localStorage.getItem("dungeon-hard-unlocked") === "true";
+let hardUnlocked = typeof window.nativeGameStorage?.hardModeUnlocked === "boolean"
+  ? window.nativeGameStorage.hardModeUnlocked
+  : readHardUnlock();
 let roundNumber = 1;
 let gameMap = [];
 let player = { x: 0, y: 0, hp: 0, maxHp: 0, damage: 4, weapon: "Fists" };
@@ -35,6 +37,24 @@ let spawnInterval = 1000;
 let lastUpdate = 0;
 let message = "Loading the dungeon...";
 let lastError = "";
+
+function readHardUnlock() {
+  try {
+    return localStorage.getItem("dungeon-hard-unlocked") === "true";
+  } catch (error) {
+    console.warn("Browser storage is unavailable; native progress storage will be used when supported.", error);
+    return false;
+  }
+}
+
+function saveHardUnlock() {
+  try {
+    localStorage.setItem("dungeon-hard-unlocked", "true");
+  } catch (error) {
+    console.warn("Browser storage is unavailable; using native progress storage when supported.", error);
+  }
+  window.webkit?.messageHandlers?.gameStorage?.postMessage("hardModeUnlocked");
+}
 
 const positionKey = (x, y) => `${x},${y}`;
 const parsePosition = (key) => key.split(",").map(Number);
@@ -425,7 +445,7 @@ function finishRound() {
   if (remainingToSpawn !== 0 || Object.values(entities).some((entity) => entity.type === "enemy")) return;
   if (roundNumber === 30 && !hardUnlocked) {
     hardUnlocked = true;
-    localStorage.setItem("dungeon-hard-unlocked", "true");
+    saveHardUnlock();
     state = "victory";
     showOverlay("Round 30 cleared!", "Hard mode is unlocked in this browser. Ready for a tougher run?", "victory");
     return;
