@@ -111,7 +111,15 @@ private struct GameWebView: NSViewRepresentable {
     func makeNSView(context: Context) -> WKWebView {
         let contentController = WKUserContentController()
         let unlocked = UserDefaults.standard.bool(forKey: "hardModeUnlocked")
-        let bootstrapScript = "window.nativeGameStorage = { hardModeUnlocked: \(unlocked) };"
+        let configURL = Self.gameDirectory
+            .appendingPathComponent("assets", isDirectory: true)
+            .appendingPathComponent("game-config.json")
+        let configBase64 = (try? Data(contentsOf: configURL))?.base64EncodedString()
+        let configValue = configBase64.map { "\"\($0)\"" } ?? "null"
+        let bootstrapScript = """
+        window.nativeGameStorage = { hardModeUnlocked: \(unlocked) };
+        window.nativeGameConfigBase64 = \(configValue);
+        """
         contentController.addUserScript(
             WKUserScript(
                 source: bootstrapScript,

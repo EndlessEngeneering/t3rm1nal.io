@@ -581,9 +581,17 @@ document.querySelectorAll("[data-key]").forEach((button) => {
 
 async function loadConfig() {
   try {
-    const response = await fetch("assets/game-config.json");
-    if (!response.ok) throw new Error(`Could not load game configuration (${response.status}).`);
-    config = await response.json();
+    if (typeof window.nativeGameConfigBase64 === "string") {
+      const configBytes = Uint8Array.from(
+        atob(window.nativeGameConfigBase64),
+        (character) => character.charCodeAt(0)
+      );
+      config = JSON.parse(new TextDecoder().decode(configBytes));
+    } else {
+      const response = await fetch("assets/game-config.json");
+      if (!response.ok) throw new Error(`Could not load game configuration (${response.status}).`);
+      config = await response.json();
+    }
     if (!config.map || !config.rounds || !config.enemies || !config.loot) {
       throw new Error("The game configuration is missing a required section.");
     }
@@ -594,7 +602,7 @@ async function loadConfig() {
     showMenu();
   } catch (error) {
     lastError = error instanceof Error ? error.message : "Could not load game configuration.";
-    configError.textContent = `${lastError} Run the site from a web server and check assets/game-config.json.`;
+    configError.textContent = `${lastError} Check that assets/game-config.json is included with the game.`;
     configError.classList.remove("is-hidden");
     normalButton.disabled = true;
     hardButton.disabled = true;
