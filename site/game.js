@@ -10,7 +10,7 @@ const normalButton = document.querySelector("#normal-button");
 const hardButton = document.querySelector("#hard-button");
 const continueButton = document.querySelector("#continue-button");
 const configError = document.querySelector("#config-error");
-const cellSize = 20;
+let cellSize = 20;
 const rarityColors = {
   common: "#fff",
   uncommon: "#fff",
@@ -471,9 +471,11 @@ function update(now) {
 function draw() {
   const width = config?.map.width ?? 40;
   const height = config?.map.height ?? 15;
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  const drawingWidth = width * cellSize;
+  const drawingHeight = height * cellSize;
+  context.clearRect(0, 0, drawingWidth, drawingHeight);
   context.fillStyle = "#111711";
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillRect(0, 0, drawingWidth, drawingHeight);
   if (!gameMap.length) {
     for (let y = 0; y < height; y += 1) {
       for (let x = 0; x < width; x += 1) {
@@ -486,10 +488,10 @@ function draw() {
 
   if (window.nativeGameStorage?.terminalAppearance) {
     context.fillStyle = "#000";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.fillRect(0, 0, drawingWidth, drawingHeight);
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.font = "14px SFMono-Regular, Consolas, monospace";
+    context.font = `${Math.max(12, cellSize * 0.68)}px SFMono-Regular, Consolas, monospace`;
     for (let y = 0; y < gameMap.length; y += 1) {
       for (let x = 0; x < gameMap[y].length; x += 1) {
         const character = gameMap[y][x] === "#" ? "#" : ".";
@@ -513,7 +515,7 @@ function draw() {
       }
     }
     context.fillStyle = "#fff";
-    context.font = "bold 14px SFMono-Regular, Consolas, monospace";
+    context.font = `bold ${Math.max(12, cellSize * 0.68)}px SFMono-Regular, Consolas, monospace`;
     context.fillText("@", player.x * cellSize + cellSize / 2, player.y * cellSize + cellSize / 2);
     return;
   }
@@ -547,6 +549,31 @@ function draw() {
   }
   context.fillStyle = "#ffffff";
   context.fillText("@", player.x * cellSize + cellSize / 2, player.y * cellSize + cellSize / 2);
+}
+
+function resizeNativeCanvas() {
+  if (!config || !window.nativeGameStorage?.terminalAppearance) return;
+  const board = document.querySelector(".board-frame");
+  if (!board.clientWidth || !board.clientHeight) return;
+
+  const nextCellSize = Math.min(
+    board.clientWidth / config.map.width,
+    board.clientHeight / config.map.height
+  );
+  const resized = nextCellSize !== cellSize;
+  cellSize = nextCellSize;
+  const pixelRatio = window.devicePixelRatio || 1;
+  const logicalWidth = config.map.width * cellSize;
+  const logicalHeight = config.map.height * cellSize;
+  const backingWidth = Math.round(logicalWidth * pixelRatio);
+  const backingHeight = Math.round(logicalHeight * pixelRatio);
+  const needsRedraw = resized || canvas.width !== backingWidth || canvas.height !== backingHeight;
+  canvas.style.width = `${logicalWidth}px`;
+  canvas.style.height = `${logicalHeight}px`;
+  if (canvas.width !== backingWidth) canvas.width = backingWidth;
+  if (canvas.height !== backingHeight) canvas.height = backingHeight;
+  context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  if (needsRedraw) draw();
 }
 
 function updateUi() {
@@ -637,6 +664,11 @@ async function loadConfig() {
     spawnInterval = config.rounds.spawnIntervalMs;
     state = "menu";
     showMenu();
+    if (window.nativeGameStorage?.terminalAppearance) {
+      const observer = new ResizeObserver(resizeNativeCanvas);
+      observer.observe(document.querySelector(".board-frame"));
+      resizeNativeCanvas();
+    }
   } catch (error) {
     lastError = error instanceof Error ? error.message : "Could not load game configuration.";
     configError.textContent = `${lastError} Check that assets/game-config.json is included with the game.`;

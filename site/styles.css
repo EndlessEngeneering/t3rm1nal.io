@@ -167,9 +167,22 @@ footer { gap: 10px; margin-top: 17px; color: #888; font-size: 9px; }
   background: #000;
 }
 
+html.native-terminal,
+.native-terminal body {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .native-terminal .app-shell {
-  width: min(1080px, calc(100% - 36px));
-  padding-top: 14px;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  min-height: 0;
+  flex-direction: column;
+  margin: 0;
+  padding: 10px 14px 8px;
 }
 
 .native-terminal .topbar,
@@ -177,8 +190,69 @@ footer { gap: 10px; margin-top: 17px; color: #888; font-size: 9px; }
   display: none;
 }
 
+.native-terminal .game-layout {
+  flex: 1;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.native-terminal .game-column {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+}
+
 .native-terminal .game-heading {
+  min-height: 42px;
+  flex: none;
+  margin: 0 0 8px;
   border-bottom: 1px solid #444;
+}
+
+.native-terminal .board-frame {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.native-terminal #game-board {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  image-rendering: auto;
+}
+
+.native-terminal .status-row {
+  min-height: 34px;
+  flex: none;
+}
+
+.native-terminal .side-panel {
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.native-terminal .panel-card {
+  min-height: 0;
+  padding: 12px;
+}
+
+.native-terminal .panel-card:nth-child(2) {
+  overflow: auto;
+}
+
+.native-terminal .panel-title {
+  margin-bottom: 10px;
+}
+
+.native-terminal .controls-card .control-row {
+  min-height: 23px;
 }
 
 .native-terminal .game-heading h2,
@@ -261,4 +335,11 @@ footer { gap: 10px; margin-top: 17px; color: #888; font-size: 9px; }
 .native-terminal .config-error {
   padding: 10px;
   border: 1px solid #777;
+}
+
+@media (min-width: 1100px) {
+  .native-terminal .game-layout {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 18px;
+  }
 }
