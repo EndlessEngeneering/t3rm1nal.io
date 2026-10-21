@@ -566,7 +566,10 @@ continueButton.addEventListener("click", startRound);
 
 window.addEventListener("keydown", (event) => {
   const key = event.key.toLowerCase();
-  if ([" ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(key)) event.preventDefault();
+  if ([
+    " ", "arrowup", "arrowdown", "arrowleft", "arrowright",
+    "w", "a", "s", "d", "e", "h", "enter", "escape"
+  ].includes(key)) event.preventDefault();
   if (event.repeat && [" ", "e", "h", "escape"].includes(key)) return;
   if (key === "enter") {
     handleKey("enter");

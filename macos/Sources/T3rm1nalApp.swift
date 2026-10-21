@@ -131,7 +131,7 @@ private struct GameWebView: NSViewRepresentable {
 
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = contentController
-        let webView = WKWebView(frame: .zero, configuration: configuration)
+        let webView = GameKeyboardWebView(frame: .zero, configuration: configuration)
         webView.underPageBackgroundColor = .black
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
@@ -248,6 +248,62 @@ private struct GameWebView: NSViewRepresentable {
                 decisionHandler(.cancel)
             }
         }
+    }
+}
+
+private final class GameKeyboardWebView: WKWebView {
+    override var acceptsFirstResponder: Bool { true }
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        DispatchQueue.main.async { [weak self] in
+            guard let self, let window = self.window else { return }
+            window.makeFirstResponder(self)
+        }
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        window?.makeFirstResponder(self)
+        super.mouseDown(with: event)
+    }
+
+    override func keyDown(with event: NSEvent) {
+        guard event.modifierFlags.intersection([.command, .control, .option]).isEmpty else {
+            super.keyDown(with: event)
+            return
+        }
+
+        let key: String
+        switch event.keyCode {
+        case 36, 76: key = "enter"
+        case 53: key = "escape"
+        case 49: key = " "
+        case 123: key = "arrowleft"
+        case 124: key = "arrowright"
+        case 125: key = "arrowdown"
+        case 126: key = "arrowup"
+        default:
+            guard let characters = event.charactersIgnoringModifiers?.lowercased(),
+                  ["w", "a", "s", "d", "e", "h"].contains(characters)
+            else {
+                super.keyDown(with: event)
+                return
+            }
+            key = characters
+        }
+
+        guard
+            let encodedData = try? JSONSerialization.data(
+                withJSONObject: key,
+                options: [.fragmentsAllowed]
+            ),
+            let encodedKey = String(data: encodedData, encoding: .utf8)
+        else {
+            return
+        }
+        evaluateJavaScript(
+            "window.dispatchEvent(new KeyboardEvent('keydown', { key: \(encodedKey), bubbles: true }));"
+        )
     }
 }
 
